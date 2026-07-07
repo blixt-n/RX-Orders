@@ -158,6 +158,16 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
+    monetize (2.0.0)
+      money (~> 7.0)
+    money (7.0.2)
+      bigdecimal
+      i18n (~> 1.9)
+    money-rails (3.0.0)
+      activesupport (>= 7.0)
+      monetize (~> 2.0)
+      money (~> 7.0)
+      railties (>= 7.0)
     msgpack (1.8.3)
     net-imap (0.6.4.1)
       date
@@ -334,6 +344,7 @@ DEPENDENCIES
   faker
   image_processing (~> 1.2)
   kamal
+  money-rails
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 8.1.3)
