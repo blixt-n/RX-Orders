@@ -10,4 +10,5 @@ class Prescription < ApplicationRecord
   }
 
   belongs_to :patient, class_name: "User"
+  has_many :orders
 end

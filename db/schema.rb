@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_07_163846) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_07_180207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "orders", force: :cascade do |t|
+    t.bigint "buyer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "paid_at"
+    t.bigint "prescription_id", null: false
+    t.integer "status", default: 0, null: false
+    t.integer "total_cents"
+    t.datetime "updated_at", null: false
+    t.index ["buyer_id"], name: "index_orders_on_buyer_id"
+    t.index ["prescription_id"], name: "index_orders_on_prescription_id"
+  end
 
   create_table "prescriptions", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -33,5 +45,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_163846) do
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
   end
 
+  add_foreign_key "orders", "prescriptions"
+  add_foreign_key "orders", "users", column: "buyer_id"
   add_foreign_key "prescriptions", "users", column: "patient_id"
 end
