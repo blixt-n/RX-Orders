@@ -9,7 +9,7 @@ AllCops:
     - "storage/**/*"
     - "vendor/**/*"
     - "tmp/**/*"
-    - "config/**/*"
+    - !ruby/regexp /\/config\/(?!initializers\/sidekiq\.rb)/
     - "db/schema.rb"
     - "db/migrate/*"
     - "docker-compose.yml"
