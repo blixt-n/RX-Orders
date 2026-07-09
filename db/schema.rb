@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_07_180207) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_09_115517) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,6 +20,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_180207) do
     t.datetime "paid_at"
     t.bigint "prescription_id", null: false
     t.integer "status", default: 0, null: false
+    t.string "stripe_payment_intent_id"
     t.integer "total_cents"
     t.datetime "updated_at", null: false
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"

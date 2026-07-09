@@ -13,5 +13,11 @@ FactoryBot.define do
     trait :third_party_payer do
       prescription { association :prescription }
     end
+
+    after(:build) do |order|
+      if order.processing?  && order.stripe_payment_intent_id.blank?
+        order.stripe_payment_intent_id = "pi_#{SecureRandom.alphanumeric(22)}"
+      end
+    end
   end
 end
