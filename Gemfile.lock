@@ -89,6 +89,7 @@ GEM
     bundler-audit (0.9.3)
       bundler (>= 1.2.0)
       thor (~> 1.0)
+    circuitbox (2.0.0)
     concurrent-ruby (1.3.7)
     connection_pool (3.0.2)
     crack (1.0.1)
@@ -320,6 +321,9 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
+    stripe (19.3.0)
+      bigdecimal
+      logger
     thor (1.5.0)
     thruster (0.1.22-aarch64-linux)
     timeout (0.6.1)
@@ -349,6 +353,7 @@ DEPENDENCIES
   bootsnap
   brakeman
   bundler-audit
+  circuitbox
   debug
   factory_bot_rails
   faker
@@ -362,6 +367,7 @@ DEPENDENCIES
   rspec-rails
   rubocop-rails-omakase
   sidekiq
+  stripe
   thruster
   tzinfo-data
   vcr

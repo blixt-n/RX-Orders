@@ -9,7 +9,7 @@ AllCops:
     - "storage/**/*"
     - "vendor/**/*"
     - "tmp/**/*"
-    - !ruby/regexp /\/config\/(?!initializers\/sidekiq\.rb)/
+    - !ruby/regexp /config\/(?!initializers\/(circuitbox|sidekiq|stripe)\.rb)/
     - "db/schema.rb"
     - "db/migrate/*"
     - "docker-compose.yml"
@@ -18,3 +18,14 @@ AllCops:
     - "Gemfile.lock"
     - "spec/rails_helper.rb"
     - "spec/spec_helper.rb"
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+  Include:
+    - "app/**/*.rb"
+    - "config/**/*.rb"
+    - "lib/**/*.rb"
+    - "spec/**/*.rb"
+    - "test/**/*.rb"
+    - "Gemfile"
