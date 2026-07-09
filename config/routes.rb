@@ -12,6 +12,10 @@ Rails.application.routes.draw do
       resources :orders, only: [] do
         resource :checkout, only: [:create]
       end
+
+      namespace :webhooks do
+        resource :stripe, only: [:create], controller: :stripe
+      end
     end
   end
 end
