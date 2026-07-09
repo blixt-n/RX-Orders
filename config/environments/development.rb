@@ -38,6 +38,9 @@ Rails.application.configure do
   # Queuing backend for Active Job.
   config.active_job.queue_adapter = :sidekiq
 
+  # Allow the Docker container network to make requests to the Rails app (important for Stripe CLI)
+  config.hosts << "web"
+
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
