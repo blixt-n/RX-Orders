@@ -1,6 +1,11 @@
 require "active_support/core_ext/integer/time"
+require "webmock"
 
 Rails.application.configure do
+  # Prevent Twilio API calls in development
+  WebMock.stub_request(:post, /api.twilio.com/)
+         .to_return(status: 201, body: { sid: "SMdevmock#{SecureRandom.hex(8)}", status: "queued" }.to_json)
+  
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Make code changes take effect immediately without server restart.

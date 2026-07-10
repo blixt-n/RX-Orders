@@ -115,6 +115,12 @@ GEM
       railties (>= 6.1.0)
     faker (3.8.0)
       i18n (>= 1.8.11, < 2)
+    faraday (2.14.3)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.4)
+      net-http (~> 0.5)
     ffi (1.17.4-aarch64-linux-gnu)
     globalid (1.4.0)
       activesupport (>= 6.1)
@@ -131,6 +137,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.20.0)
+    jwt (3.2.0)
+      base64
     kamal (2.12.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -172,6 +180,8 @@ GEM
       money (~> 7.0)
       railties (>= 7.0)
     msgpack (1.8.3)
+    net-http (0.9.1)
+      uri (>= 0.11.1)
     net-imap (0.6.4.1)
       date
       net-protocol
@@ -330,6 +340,10 @@ GEM
     thruster (0.1.22-aarch64-linux)
     timeout (0.6.1)
     tsort (0.2.0)
+    twilio-ruby (7.10.7)
+      faraday (>= 2.0, < 3.0)
+      jwt (>= 1.5, < 4.0)
+      nokogiri (>= 1.6, < 2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.2.0)
@@ -372,6 +386,7 @@ DEPENDENCIES
   sidekiq
   stripe
   thruster
+  twilio-ruby
   tzinfo-data
   vcr
   webmock

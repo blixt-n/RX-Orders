@@ -21,6 +21,7 @@ gem "redis"
 # External APIs
 gem "circuitbox"
 gem "stripe"
+gem "twilio-ruby"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -56,9 +57,10 @@ group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "faker"
+
+  gem "webmock" # webmock used in development to block Twilio API calls
 end
 
 group :test do
   gem "vcr"
-  gem "webmock"
 end
