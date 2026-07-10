@@ -1,9 +1,9 @@
 # RX Orders
 
 RX Orders is a headless Rails API designed to demonstrate a robust, asynchronous payment processing architecture 
-using Stripe. By decoupling the checkout process and relying entirely on Stripe Webhooks as the source of truth, 
-this project showcases how to safely handle payment state, prevent race conditions, and offload PCI compliance. 
-Background processing is handled via Sidekiq and Redis.
+using Stripe, alongside event-driven SMS notifications via Twilio. By decoupling the checkout process and relying 
+entirely on Stripe Webhooks and an Order state machine as the sources of truth, this project showcases how to safely
+handle payment state, trigger side-effects, and offload PCI compliance. Background processing is handled via Sidekiq and Redis.
 
 ## Out of Scope for Project (Handled in Production)
 - Authentication
@@ -114,23 +114,63 @@ When you run `docker compose up`, the CLI container automatically starts, authen
 3. Restart the web container (`docker compose restart web`) so Rails can load the secret into memory and successfully verify the incoming payload signatures.
 
 ## Testing Payments
-### Checkout
-Find a pending order in the Rails console using `Order.pending.ids` and submit a curl command from a terminal for 
-one of the pending orders.
+
+### 1. Intent Initiation (Checkout)
+Find a pending order in the Rails console using `Order.pending.ids` and submit a curl command from a terminal for one of the pending orders.
 ```bash
 curl -X POST http://localhost:3000/api/v1/orders/:id/checkout \
   -H "Accept: application/json"
 ```
-This will submit a request to Stripe to return a client secret, which would be used in the frontend app, and it will 
-also trigger a webhook.  The traffic can be seen both in the web container logs and the stripe-cli logs.  The 
-stripe-cli logs look like this:
-```
+This will submit a request to Stripe to return a client secret, which would normally be used by the frontend app to mount Stripe Elements. It will also trigger an initial webhook, and transition your order's state in the database from `pending` to `processing`. The traffic can be seen both in the web container logs and the stripe-cli logs. The stripe-cli logs will look like this:
+```text
 2026-07-10 12:18:11   --> payment_intent.created [evt_3TrdNeK5PJtLkbsN1yuUcju4]
 2026-07-10 12:18:11  <--  [200] POST http://web:3000/api/v1/webhooks/stripe [evt_3TrdNeK5PJtLkbsN1yuUcju4]
 ```
+
+### 2. Simulating Payment Success (Webhook Trigger)
+Because this project is a headless API without a frontend to securely capture test credit card details, the intent created in Step 1 will permanently remain in a `requires_payment_method` state.
+
+To test the full asynchronous fulfillment lifecycle—which transitions the order to `paid` and triggers the outbound SMS notification—you must manually simulate a successful payment capture using the Stripe CLI. Since your webhook job relies on the `order_id` in the payload metadata to find the correct record, you must inject the ID of the order you just checked out (which should now be in a `processing` state) into the trigger command.
+
+Open a new terminal tab while your Docker stack is running and execute the following, replacing `:id` with your actual 
+Order ID:
+```bash
+docker compose exec stripe-cli stripe trigger payment_intent.succeeded --add payment_intent:metadata.order_id=:id
+```
+This forces Stripe to fire a mocked success webhook at your local server. If you check your Sidekiq logs (`docker compose logs -f sidekiq`), you will see the `ProcessStripeWebhookJob` catch the event, update the database, and instantly enqueue the `SendOrderPaidSmsJob`.
 
 ## Stripe References
 - [Webhook Best Practices](https://docs.stripe.com/webhooks)
 - [Stripe CLI](https://docs.stripe.com/cli)
 - [Payment Intents API](https://docs.stripe.com/api/payment_intents)
 - [API Limits](https://docs.stripe.com/rate-limits)
+
+
+## Twilio SMS Integration
+
+This project includes a fully tested integration with the Twilio API to handle outbound SMS notifications. The `TwilioClient` is wrapped in a custom service class that manages API interactions, formats phone numbers to the E.164 standard, and parses Twilio-specific error codes.
+
+### Design Decisions & Constraints
+* **Simulated Environment:** This feature was built as a proof-of-concept to demonstrate proficiency with the Twilio Ruby SDK, third-party error handling, and test-driven development. A live Twilio account was not provisioned for personal reasons. Instead, the test suite and error handling logic strictly utilize mocking (via WebMock) to validate success responses, 400-level validation errors, and network timeouts.
+* **Event-Driven Execution:** To keep the project scope focused and avoid unnecessary boilerplate, the SMS logic is hooked directly into the existing `Order` state machine. When an order successfully transitions to the `paid` state, it asynchronously enqueues a background job (`SendOrderPaidSmsJob`). This demonstrates a standard, real-world notification flow (triggering side-effects based on domain events) without over-engineering a standalone messaging infrastructure.
+
+## Twilio References
+- [E.164 Phone Number Formatting](https://www.twilio.com/docs/glossary/what-e164)
+- [Error and Warning Dictionary](https://www.twilio.com/docs/api/errors)
+
+--------------
+## Future Work
+
+### Dead Letter Queue (DLQ) for Failed SMS Notifications
+Currently, if SMS delivery fails due to network or infrastructure issues, Sidekiq will automatically retry the 
+`SendOrderPaidSmsJob` based on its default backoff schedule. If a job exhausts all retries, it is moved to Sidekiq's
+native **Dead set** (Dead Letter Queue).
+
+**Planned Enhancements:**
+To prevent failed notifications from silently decaying in the Dead set, a more robust DLQ handling strategy should be implemented:
+1. **ActiveJob `rescue_from` / `discard_on`:** Utilize ActiveJob's built-in hooks to catch permanently failed jobs.
+2. **Database Tracking:** Update the `Order` or add a `Notification` record in the database with a `failed` status when a job dies.
+3. **Alerting:** Trigger a specific alert for the customer service team to manually reach out to the customer via email.
+
+*Note: The `sidekiq-failures` gem or integrating a specialized state management tool like `acidic_job` could also be 
+reviewed.*
