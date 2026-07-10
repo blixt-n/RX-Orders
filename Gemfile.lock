@@ -79,6 +79,9 @@ GEM
       uri (>= 0.13.1)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
+    after_commit_everywhere (1.6.0)
+      activerecord (>= 4.2)
+      activesupport
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt_pbkdf (1.1.2)
@@ -367,6 +370,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
+  after_commit_everywhere
   bootsnap
   brakeman
   bundler-audit

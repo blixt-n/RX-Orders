@@ -11,6 +11,7 @@ gem "puma", ">= 5.0"
 
 # State Machine [https://github.com/aasm/aasm]
 gem "aasm"
+gem "after_commit_everywhere" # To handle callbacks in aasm
 
 gem "money-rails"
 
