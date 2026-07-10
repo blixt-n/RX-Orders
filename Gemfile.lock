@@ -124,15 +124,12 @@ GEM
       logger
     faraday-net_http (3.4.4)
       net-http (~> 0.5)
-    ffi (1.17.4-aarch64-linux-gnu)
     globalid (1.4.0)
       activesupport (>= 6.1)
     hashdiff (1.2.1)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    image_processing (1.14.0)
-      mini_magick (>= 4.9.5, < 6)
-      ruby-vips (>= 2.0.17, < 3)
+    image_processing (2.0.2)
     io-console (0.8.2)
     irb (1.18.0)
       pp (>= 0.6.0)
@@ -166,8 +163,6 @@ GEM
       net-pop
       net-smtp
     marcel (1.2.1)
-    mini_magick (5.3.1)
-      logger
     mini_mime (1.1.5)
     minitest (6.0.6)
       drb (~> 2.0)
@@ -202,12 +197,15 @@ GEM
     nio4r (2.7.5)
     nokogiri (1.19.4-aarch64-linux-gnu)
       racc (~> 1.4)
+    nokogiri (1.19.4-x86_64-linux-gnu)
+      racc (~> 1.4)
     ostruct (0.6.3)
     parallel (2.1.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
     pg (1.6.3-aarch64-linux)
+    pg (1.6.3-x86_64-linux)
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.0)
@@ -319,9 +317,6 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
-    ruby-vips (2.3.0)
-      ffi (~> 1.12)
-      logger
     securerandom (0.4.1)
     sidekiq (8.1.6)
       connection_pool (>= 3.0.0)
@@ -341,6 +336,7 @@ GEM
       logger
     thor (1.5.0)
     thruster (0.1.22-aarch64-linux)
+    thruster (0.1.22-x86_64-linux)
     timeout (0.6.1)
     tsort (0.2.0)
     twilio-ruby (7.10.7)
@@ -367,6 +363,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  x86_64-linux
 
 DEPENDENCIES
   aasm
@@ -378,7 +375,7 @@ DEPENDENCIES
   debug
   factory_bot_rails
   faker
-  image_processing (~> 1.2)
+  image_processing (~> 2.0)
   kamal
   money-rails
   pg (~> 1.1)
