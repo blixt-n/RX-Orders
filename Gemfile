@@ -9,6 +9,9 @@ gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
+# State Machine [https://github.com/aasm/aasm]
+gem "aasm"
+
 gem "money-rails"
 
 # Background jobs

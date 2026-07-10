@@ -11,10 +11,8 @@ class StripeCheckout
   def call
     intent = STRIPE_CIRCUIT.run { stripe_payment_intent }
 
-    @order.update!(
-      stripe_payment_intent_id: intent.id,
-      status: :processing
-    )
+    @order.stripe_payment_intent_id = intent.id
+    @order.process!
 
     log_event("stripe_checkout_initiated", payload: { order_id: @order.id, intent_id: intent.id })
     { success: true, client_secret: intent.client_secret }

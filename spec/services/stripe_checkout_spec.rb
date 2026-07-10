@@ -45,7 +45,7 @@ RSpec.describe StripeCheckout do
       before do
         allow(Stripe::PaymentIntent).to receive(:create).and_return(mock_intent)
 
-        allow(order).to receive(:update!).and_raise(ActiveRecord::RecordInvalid.new(order))
+        allow(order).to receive(:process!).and_raise(ActiveRecord::RecordInvalid.new(order))
         @result = service.call
       end
 

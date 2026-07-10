@@ -15,9 +15,9 @@ class ProcessStripeWebhookJob < ApplicationJob
 
     case event_type
     when "payment_intent.succeeded"
-      order.paid! unless order.paid?
+      order.pay! unless order.paid?
     when "payment_intent.payment_failed"
-      order.failed! unless order.failed?
+      order.fail! unless order.failed?
     else
       log_event("unhandled_stripe_event_type", payload: { event_type: event_type, order_id: order.id })
     end
