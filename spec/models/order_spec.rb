@@ -26,6 +26,12 @@ RSpec.describe Order, type: :model do
           .to change { order.reload.status }.from("processing").to("paid")
                                      .and change { order.reload.paid_at }.from(nil)
       end
+
+      it "enqueues a SendOrderPaidSmsJob when paid" do
+        order.status = :processing
+        order.save
+        expect { order.pay! }.to have_enqueued_job(SendOrderPaidSmsJob).with(order.id)
+      end
     end
   end
 end

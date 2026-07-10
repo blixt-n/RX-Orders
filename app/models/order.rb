@@ -23,7 +23,7 @@ class Order < ApplicationRecord
       transitions from: :pending, to: :processing
     end
 
-    event :pay do
+    event :pay, after_commit: :enqueue_payment_sms do
       transitions from: :processing, to: :paid, after: :set_paid_at
     end
 
@@ -36,5 +36,9 @@ class Order < ApplicationRecord
 
   def set_paid_at
     self.paid_at = Time.current
+  end
+
+  def enqueue_payment_sms
+    SendOrderPaidSmsJob.perform_later(self.id)
   end
 end
