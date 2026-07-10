@@ -7,6 +7,12 @@ Rails.application.config.filter_parameters += [
   :passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn, :cvv, :cvc
 ]
 
+# Filtering attributes
 Rails.application.config.filter_parameters += [
   :email, :phone_number, :medication_name
+]
+
+# Filtering API
+Rails.application.config.filter_parameters += [
+  :api_key, :client_secret, :client_id, :bearer, :authorization, :auth_token, :access_token
 ]
